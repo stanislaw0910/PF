@@ -73,7 +73,7 @@ class Example(QWidget):
         self.setWindowTitle('CurrencyCalc')
         self.show()
 
-    def onChanged(self,text):
+    def onChanged(self,text):  #changes in textbox showing in result
         d = self.d
         x = self.cur1
         y = self.cur2
@@ -84,7 +84,7 @@ class Example(QWidget):
         except ValueError:
             self.result.setText(str(0.0))
 
-    def onChanged1(self,text):
+    def onChanged1(self,text): #changes in result showing in textbox
         d = self.d
         x = self.cur1
         y = self.cur2
@@ -94,14 +94,14 @@ class Example(QWidget):
         except ValueError:
             self.textbox.setText(str(0.0))
 
-    def onActivated(self, x):
+    def onActivated(self, x):  # Left combobox
         d = self.d
         self.lbl1.setText(d[x][0])
         self.lbl1.adjustSize()
         self.cur1 = str(self.combo.currentText())
         self.onChanged(self.cur1)
 
-    def onActivated1(self, x):
+    def onActivated1(self, x):   #Right combobox
         d = self.d
         self.lbl2.setText(d[x][0])
         self.lbl2.adjustSize()
