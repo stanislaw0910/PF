@@ -6,7 +6,7 @@ from urllib.request import urlopen, URLError
 from xml.etree import ElementTree as etree
 from ddmmyy import days, months, years, acts
 from PyQt5.QtCore import QDate
-import decimal
+from decimal import getcontext, Decimal, InvalidOperation
 
 
 def nominative(s):
@@ -16,9 +16,10 @@ def nominative(s):
         p = morph.parse(s[i])[0]
         s[i] = p.normal_form
     return ' '.join(s)
+
 def fl(s):
     s = s.replace(',', '.')
-    s = float(s)
+    s = Decimal(s).quantize(Decimal('1.01'))
     return s
 
 
@@ -44,7 +45,7 @@ def cur(day, month, year):
                 else:
                     s = child[3].text
                 d[child[1].text] = (s.capitalize(), a)
-            d['RUB'] = ('Рубль', 1.0)
+            d['RUB'] = ('Рубль', Decimal(1.0))
         print(day,month,year)
 
     except URLError:
@@ -61,7 +62,7 @@ class Example(QWidget):
         days(self)
         months(self)
         acts(self)
-        
+
         ok_button = QPushButton('OK', self)
         ok_button.resize(50, 25)
         ok_button.move(210,130)
@@ -84,7 +85,7 @@ class Example(QWidget):
         self.textbox.move(45, 50)
         self.textbox.resize(65, 25)
 
-        self.month_combo.activated[str].connect(acts)
+        self.month_combo.activated[str].connect(self.act)
         self.year_combo.activated[str].connect(self.act)
         '''switch = QPushButton('<>', self)
         switch.resize(25, 25)
@@ -98,28 +99,26 @@ class Example(QWidget):
         curday = self.days_combo.currentText()
         month_value = int(self.month_combo.currentText())
         year_value = int(self.year_combo.currentText())
-        no_day_date = QDate(year_value, month_value, 1)
-        n = no_day_date.daysInMonth()
+        n = QDate(year_value, month_value, 1).daysInMonth()
         self.days_combo.clear()
         for day in range(1, n + 1):
             self.days_combo.addItem('%d' % day)
-        try:
+        if n >= int(curday):
             self.days_combo.setCurrentIndex(self.days_combo.findText(curday))
-        except:
-            self.days_combo.setCurrentIndex(1)
-
-    def shhh(self):
-        print('wobla')
+        else:
+            self.days_combo.setCurrentIndex(self.days_combo.count()-1)
 
     def onChanged(self, text):  #changes in textbox showing in result
         x = self.cur1
         y = self.cur2
-        print(x, y, d[x][1])
+        print(x, y, type(d[y][1]))
         try:
-            s = round(float(text)*d[x][1]/d[y][1], 2)
+            tex = Decimal(str(text))
+            s = tex*d[x][1]/d[y][1]
+            print(s)
             self.result.setText(str(s))
-        except ValueError:
-            self.result.setText(' ')
+        except InvalidOperation:
+            self.result.setText('adin')
 
     def request(self):
         day_value = self.days_combo.currentText()

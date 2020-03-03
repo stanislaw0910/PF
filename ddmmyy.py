@@ -42,7 +42,7 @@ def days(self):
 
 
 def acts(self):
-    curday = self.days_combo.currentText()
+    curd = self.days_combo.currentText()
     month_value = int(self.month_combo.currentText())
     year_value = int(self.year_combo.currentText())
     no_day_date = QDate(year_value, month_value, 1)
@@ -50,7 +50,7 @@ def acts(self):
     self.days_combo.clear()
     for day in range(1, n+1):
         self.days_combo.addItem('%d' % day)
-    self.days_combo.setCurrentIndex(self.days_combo.findText(curday))
+    self.days_combo.setCurrentIndex(self.days_combo.findText(curd))
 
 if __name__ == '__main__':
     print('This is only a test')
