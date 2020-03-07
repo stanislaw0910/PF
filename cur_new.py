@@ -6,6 +6,7 @@ from urllib.request import urlopen, URLError
 from xml.etree import ElementTree as etree
 from ddmmyy import days, months, years, acts
 from PyQt5.QtCore import QDate
+from PyQt5.QtGui import *
 from decimal import getcontext, Decimal, InvalidOperation
 
 
@@ -62,8 +63,9 @@ class Example(QWidget):
         days(self)
         months(self)
         acts(self)
-
         ok_button = QPushButton('OK', self)
+        ok_button.setFocus(True)
+        ok_button.setAutoDefault(True)
         ok_button.resize(50, 25)
         ok_button.move(210,130)
 
